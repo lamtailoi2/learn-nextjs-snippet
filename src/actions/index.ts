@@ -1,6 +1,7 @@
 "use server";
 import { db } from "@/db";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 export async function createSnippet(
   formState: { message: string; state: string },
   formData: FormData
@@ -20,6 +21,7 @@ export async function createSnippet(
   await db.snippet.create({ data: snippet }).catch((e) => {
     return { message: e.message, state: "error" };
   });
+  revalidatePath("/");
   redirect("/");
 }
 
@@ -29,10 +31,12 @@ export async function updateSnippet(code: string, id: number) {
     data: { code },
   });
   console.log(snippet);
+  revalidatePath(`/snippets/${id}`);
   redirect(`/snippets/${id}`);
 }
 
 export async function deleteSnippet(id: number) {
   await db.snippet.delete({ where: { id } });
+  revalidatePath("/");
   redirect("/");
 }

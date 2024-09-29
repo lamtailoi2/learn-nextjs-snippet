@@ -13,7 +13,7 @@ export default async function EditSnippet(props: SnippetShowPageProps) {
   }
   return (
     <div>
-      <SnippetEditForm snippet={snippet} />;
+      <SnippetEditForm snippet={snippet} />
     </div>
   );
 }
