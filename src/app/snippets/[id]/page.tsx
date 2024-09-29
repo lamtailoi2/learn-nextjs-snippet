@@ -6,17 +6,19 @@ import { deleteSnippet } from "@/actions";
 export default async function SnippetShowPage(props: SnippetShowPageProps) {
   await new Promise((r) => setTimeout(r, 2000));
   const id = parseInt(props.params.id);
-  const snippet = await db.snippet.findFirst({
-    where: { id: id },
-  });
+  const snippet = await db.snippet.findUnique({ where: { id } });
 
   if (!snippet) {
     return notFound();
   }
+
   const deleteSnippetAction = deleteSnippet.bind(null, snippet.id);
   return (
     <div>
       <div className="flex m-4 justify-between items-center">
+        <Link href={"/"} className="text-xl font-bold">
+          Home
+        </Link>
         <h1 className="text-xl font-bold">{snippet.title}</h1>
         <div className="flex gap-4">
           <Link href={`${id}/edit`} className="p-2 border rounded">

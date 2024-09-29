@@ -1,16 +1,25 @@
 "use server";
 import { db } from "@/db";
 import { redirect } from "next/navigation";
-
-export async function createSnippet(formData: FormData) {
+export async function createSnippet(
+  formState: { message: string; state: string },
+  formData: FormData
+) {
   const title = formData.get("title") as string;
   const code = formData.get("code") as string;
+  if (title === "" || title.length < 3) {
+    return { message: "Title must be longer", state: "error" };
+  }
+  if (code === "") {
+    return { message: "Code cannot be empty", state: "error" };
+  }
   const snippet = {
     title,
     code,
   };
-  await db.snippet.create({ data: snippet });
-  console.log(snippet);
+  await db.snippet.create({ data: snippet }).catch((e) => {
+    return { message: e.message, state: "error" };
+  });
   redirect("/");
 }
 
